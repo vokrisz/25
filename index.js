@@ -120,7 +120,6 @@ function DateInTimeZone(year, month, day, hour, minute, second, timeZone)
 
 function GetTimezone(date) {
   const offset = -date.getTimezoneOffset();
-  console.log(offset)
   if (offset == 60) return "CET";
   if (offset == 120) return "CEST";
   return "UTC";
