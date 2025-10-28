@@ -123,17 +123,17 @@ function GetTimezoneOffsetone(date)
     const zoneMatch = date.toString().match(/\(([^)]+)\)/);
     const zoneName = zoneMatch ? zoneMatch[1] : "Unknown";
 
-    var abbr;
-
     if (/Central European/.test(zoneName)) {
-        if (/Summer/.test(zoneName)) {
-        abbr = "CEST";
-        } else {
-        abbr = "CET";
+        if (/Summer/.test(zoneName)) 
+        {
+            return "CEST";
+        } 
+        else 
+        {
+            return "CET";
         }
     }
 
-  return abbr;
 }
 
 function GenerateFutureBox(date)
