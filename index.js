@@ -9,7 +9,7 @@ window.onerror = function (msg, url, line, col, error) {
 window.onload = function() 
 { 
     const now = new Date();
-    alert(referenceBedTime.toString())
+
     SetDatePicker(now);
     RefreshToday(now);
     RefreshFutureDates(now)
@@ -118,23 +118,12 @@ function DateInTimeZone(year, month, day, hour, minute, second, timeZone)
     return new Date(Date.UTC(year, month, day, hour, minute + tzOffset, second));
 }
 
-function GetTimezone(date) 
-{
-    const zoneMatch = date.toString().match(/\(([^)]+)\)/);
-    const zoneName = zoneMatch ? zoneMatch[1] : "Unknown";
-
-    if (/Central European/.test(zoneName)) {
-        if (/Summer/.test(zoneName)) 
-        {
-            return "CEST";
-        } 
-        else 
-        {
-            return "CET";
-        }
-    }
-
-    return "???";
+function GetTimezone(date) {
+  const offset = -date.getTimezoneOffset();
+  console.log(offset)
+  if (offset == 60) return "CET";
+  if (offset == 120) return "CEST";
+  return "UTC";
 }
 
 function GenerateFutureBox(date)
