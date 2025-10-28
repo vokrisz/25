@@ -1,4 +1,4 @@
-const referenceBedTime = DateInTimeZone(2025, 11, 1, 4, 0, 0, "Europe/Budapest");//ToDo back calculation
+const referenceBedTime = DateInTimeZone(2025, 11, 1, 4, 0, 0, "Europe/Budapest");
 
 const sleepLengthInHours = 8;
 
@@ -29,7 +29,9 @@ function RefreshFutureDates(date)
     const element = document.getElementById('future');
     element.innerHTML = '';
 
-    var futureDate = new Date(date);
+    var futureDate = DateInTimeZone(date.getFullYear(),date.getMonth()+1,date.getDate(),0,0,0,"Europe/Budapest");
+
+  console
 
     element.innerHTML+= GenerateFutureBox(addHours(futureDate,-24));
     element.innerHTML+= GenerateFutureBox(futureDate);
@@ -104,7 +106,7 @@ const SetElementToTimeSpan = (id,timeSpan)=>SetElementTo(id,`${timeSpan.Sleeping
 const SetElementToHourMin = (id,time)=>SetElementTo(id,FormatTimeAndZone(time));
 
 const FormatTime=(hour,min) =>`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`
-const FormatTimeAndZone=(time) =>`${FormatTime(time.getHours(),time.getMinutes())} ${GetTimezoneOffsetone(time)}`
+const FormatTimeAndZone=(time) =>`${FormatTime(time.getHours(),time.getMinutes())} ${GetTimezone(time)}`
 const FormatDate=(date) =>`${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")}`;
 
 const addHours = (date, hours) => new Date(date.getTime() + hours*60*60*1000);
@@ -118,7 +120,7 @@ function DateInTimeZone(year, month, day, hour, minute, second, timeZone)
     return new Date(Date.UTC(year, month, day, hour, minute + tzOffset, second));
 }
 
-function GetTimezoneOffsetone(date) 
+function GetTimezone(date) 
 {
     const zoneMatch = date.toString().match(/\(([^)]+)\)/);
     const zoneName = zoneMatch ? zoneMatch[1] : "Unknown";
@@ -134,6 +136,9 @@ function GetTimezoneOffsetone(date)
         }
     }
 
+
+
+    return "???";
 }
 
 function GenerateFutureBox(date)
@@ -152,7 +157,7 @@ function GenerateFutureBox(date)
                   </div>
                   <div class="home-container27">
                     <span id="futureWake0" class="home-text37">${FormatTimeAndZone(times.WakeUpTime)}</span>
-                    <span id="futureWakeDate0" class="home-text38">${FormatDate(times.WakeUpTime)}</span>
+                    <span id="futureWakeDate0" class="home-text38">(${FormatDate(times.WakeUpTime)})</span>
                   </div>
                 </div>
                 <div class="home-container28">
@@ -164,7 +169,7 @@ function GenerateFutureBox(date)
                   </div>
                   <div class="home-container30">
                     <span id="futureBedTime0" class="home-text42">${FormatTimeAndZone(times.Bedtime)}</span>
-                    <span id="futureBedTimeDate0" class="home-text43">${FormatDate(times.Bedtime)}</span>
+                    <span id="futureBedTimeDate0" class="home-text43">(${FormatDate(times.Bedtime)})</span>
                   </div>
                 </div>
               </div>
