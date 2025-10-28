@@ -9,7 +9,7 @@ window.onerror = function (msg, url, line, col, error) {
 window.onload = function() 
 { 
     const now = new Date();
-
+    alert(referenceBedTime.toString())
     SetDatePicker(now);
     RefreshToday(now);
     RefreshFutureDates(now)
@@ -133,8 +133,6 @@ function GetTimezone(date)
             return "CET";
         }
     }
-
-
 
     return "???";
 }

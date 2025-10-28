@@ -1,5 +1,5 @@
 .home-container10 {
-  width: 456px;
+  min-width: 456px;
   display: flex;
   min-height: 100vh;
   align-items: center;
