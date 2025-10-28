@@ -2,6 +2,10 @@ const referenceBedTime = DateInTimeZone(2025, 11, 1, 4, 0, 0, "Europe/Budapest")
 
 const sleepLengthInHours = 8;
 
+window.onerror = function (msg, url, line, col, error) {
+  alert("JS Error:\n" + msg + "\n" + url + ":" + line);
+};
+
 window.onload = function() 
 { 
     const now = new Date();
