@@ -21,7 +21,7 @@ function SetDatePicker(now)
 
     input.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-    input.addEventListener("change", () => RefreshFutureDates(input.value));
+    input.addEventListener("change", () => RefreshFutureDates(new Date(input.value)));
 }
 
 function RefreshFutureDates(date)
@@ -30,8 +30,6 @@ function RefreshFutureDates(date)
     element.innerHTML = '';
 
     var futureDate = DateInTimeZone(date.getFullYear(),date.getMonth()+1,date.getDate(),0,0,0,"Europe/Budapest");
-
-  console
 
     element.innerHTML+= GenerateFutureBox(addHours(futureDate,-24));
     element.innerHTML+= GenerateFutureBox(futureDate);
