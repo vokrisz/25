@@ -22,13 +22,10 @@ function SetDatePicker(now)
 
 function RefreshFutureDates(date)
 {
-    console.log("Selected date:", date);
     const element = document.getElementById('future');
     element.innerHTML = '';
 
     var futureDate = new Date(date);
-
-    console.log(futureDate);
 
     element.innerHTML+= GenerateFutureBox(addHours(futureDate,-24));
     element.innerHTML+= GenerateFutureBox(futureDate);
