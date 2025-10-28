@@ -5,6 +5,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
+  grid-template-columns: 1fr;
 }
  
 .home-container11 {
@@ -14,9 +15,9 @@
   flex-direction: column;
 }
  
-.home-main1 {
+.home-main {
   width: 456px;
-  height: 54px;
+  height: 48px;
   display: grid;
   margin-top: var(--dl-layout-space-halfunit);
   border-color: var(--dl-color-theme-neutral-dark);
@@ -98,7 +99,7 @@
  
 .home-relative {
   width: 456px;
-  height: 54px;
+  height: 48px;
   display: grid;
   border-color: var(--dl-color-theme-neutral-dark);
   border-width: 1px;
@@ -193,166 +194,104 @@
   flex-direction: column;
 }
  
-.home-main2 {
+.home-container23 {
+  flex: 0 0 auto;
   width: 456px;
-  height: 54px;
+  height: 60px;
   display: grid;
-  margin-top: 0px;
-  margin-left: 0px;
+  place-items: center;
   border-color: var(--dl-color-theme-neutral-dark);
   border-width: 1px;
-  margin-right: 0px;
   border-radius: var(--dl-layout-radius-radius8);
-  margin-bottom: var(--dl-layout-space-halfunit);
   background-color: #D9D9D9;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr;
+  margin-bottom: 8px;
+}
+ 
+.home-text33 {
+  margin-top: 2px;
+  margin-bottom: -16px;
+}
+ 
+.home-container24 {
+  width: 100%;
+  height: 42px;
+  display: grid;
+  margin-top: 0px;
+  place-items: center;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr;
 }
  
-.home-container23 {
+.home-container25 {
   flex: 0 0 auto;
+  width: 100%;
+  height: 43px;
   display: grid;
+  margin-top: -8px;
   place-items: center;
+  padding-bottom: 0px;
   grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr;
 }
  
-.home-container24 {
+.home-container26 {
   flex: 0 0 auto;
   display: flex;
   align-items: flex-start;
 }
  
-.home-text33 {
+.home-text34 {
   text-align: center;
-}
- 
-.home-container25 {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-}
- 
-.home-text36 {
-  text-align: center;
-}
- 
-.home-text37 {
-  font-size: 11px;
-  text-align: center;
-}
- 
-.home-container26 {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  grid-template-rows: 1fr 1fr;
-  grid-template-columns: 1fr;
 }
  
 .home-container27 {
   flex: 0 0 auto;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+}
+ 
+.home-text37 {
+  text-align: center;
 }
  
 .home-text38 {
+  font-size: 11px;
   text-align: center;
 }
  
 .home-container28 {
   flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-}
- 
-.home-text41 {
-  text-align: center;
-}
- 
-.home-text42 {
-  font-size: 11px;
-  text-align: center;
-}
- 
-.home-main3 {
-  width: 456px;
-  height: 54px;
+  width: 100%;
   display: grid;
-  margin-top: 0px;
-  margin-left: 0px;
-  border-color: var(--dl-color-theme-neutral-dark);
-  border-width: 1px;
-  margin-right: 0px;
-  border-radius: var(--dl-layout-radius-radius8);
-  margin-bottom: var(--dl-layout-space-halfunit);
-  background-color: #D9D9D9;
-  grid-template-rows: 1fr;
-  grid-template-columns: 1fr 1fr;
+  margin-top: -8px;
+  place-items: center;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr;
 }
  
 .home-container29 {
   flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  grid-template-rows: 1fr 1fr;
-  grid-template-columns: 1fr;
+  display: flex;
+  align-items: flex-start;
+}
+ 
+.home-text39 {
+  text-align: center;
 }
  
 .home-container30 {
   flex: 0 0 auto;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+}
+ 
+.home-text42 {
+  text-align: center;
 }
  
 .home-text43 {
-  text-align: center;
-}
- 
-.home-container31 {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-}
- 
-.home-text46 {
-  text-align: center;
-}
- 
-.home-text47 {
-  font-size: 11px;
-  text-align: center;
-}
- 
-.home-container32 {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  grid-template-rows: 1fr 1fr;
-  grid-template-columns: 1fr;
-}
- 
-.home-container33 {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: flex-start;
-}
- 
-.home-text48 {
-  text-align: center;
-}
- 
-.home-container34 {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-}
- 
-.home-text51 {
-  text-align: center;
-}
- 
-.home-text52 {
   font-size: 11px;
   text-align: center;
 }
@@ -361,7 +300,7 @@
   display: contents;
 }
  
-.home-container35 {
+.home-container31 {
   right: 50px;
   border: 1px solid #ffffff5c;
   bottom: 30px;
@@ -385,7 +324,7 @@
   margin-right: 4px;
 }
  
-.home-text53 {
+.home-text44 {
   color: white;
   font-size: 13px;
   font-style: normal;

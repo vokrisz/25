@@ -6,8 +6,9 @@ window.onload = function()
 { 
     const now = new Date();
 
-    SetDatePicker(now)
+    SetDatePicker(now);
     RefreshToday(now);
+    RefreshFutureDates(now)
 };
 
 function SetDatePicker(now)
@@ -19,28 +20,35 @@ function SetDatePicker(now)
     input.addEventListener("change", () => RefreshFutureDates(input.value));
 }
 
-function RefreshFutureDates(date)//ToDo
+function RefreshFutureDates(date)
 {
     console.log("Selected date:", date);
+    const element = document.getElementById('future');
+    element.innerHTML = '';
+
+    var futureDate = new Date(date);
+
+    console.log(futureDate);
+
+    element.innerHTML+= GenerateFutureBox(addHours(futureDate,-24));
+    element.innerHTML+= GenerateFutureBox(futureDate);
+    element.innerHTML+= GenerateFutureBox(addHours(futureDate,24));
 }
 
 function RefreshToday(now)
 {
-    const dayDiff = Math.floor((now - referenceBedTime) / (1000 * 60 * 60 * 24));
+    var times = GetWakeUpAndBedTime(now);
 
-    var bedTime = addHours(referenceBedTime,(dayDiff+1)*25);
-    var wakeUpTime = addHours(bedTime,-(25-sleepLengthInHours));
+    SetAwake(times.WakeUpTime);
+    SetAwakeDate(times.WakeUpTime);
 
-    SetAwake(wakeUpTime);
-    SetAwakeDate(wakeUpTime);
+    SetBedTime(times.Bedtime);
+    SetBedTimeDate(times.Bedtime);
 
-    SetBedTime(bedTime);
-    SetBedTimeDate(bedTime);
-
-    var awakeTime = DiffToHourMin(now - wakeUpTime);
+    var awakeTime = DiffToHourMin(now - times.WakeUpTime);
 
     SetAwakeTime(awakeTime);
-    SetTimeToBed(DiffToHourMin(bedTime-now));
+    SetTimeToBed(DiffToHourMin(times.Bedtime-now));
 
     if(awakeTime.Sleeping)
     {
@@ -50,6 +58,16 @@ function RefreshToday(now)
     {
         SetFeelsLike({ Hour: ((7+(awakeTime.Hour))+((30+ awakeTime.Min)>59?1:0))%24, Min: (30+ awakeTime.Min)%60})
     }
+}
+
+function GetWakeUpAndBedTime(date)
+{
+    const dayDiff = Math.floor((date - referenceBedTime) / (1000 * 60 * 60 * 24));
+
+    var bedTime = addHours(referenceBedTime,(dayDiff+1)*25);
+    var wakeUpTime = addHours(bedTime,-(25-sleepLengthInHours));
+
+    return { Bedtime: bedTime, WakeUpTime:wakeUpTime};
 }
 
 function DiffToHourMin(diff)
@@ -80,12 +98,13 @@ const SetFeelsLike=(timeSpan)=>SetElementToTimeSpan('feelsLike',timeSpan);
 const SetTimeToBed=(timeSpan) => SetElementToTimeSpan('timeToBed',timeSpan);
 
 const SetElementTo = (id,text)=>document.getElementById(id).textContent = text;
-const SetElementToDate = (id,date)=>SetElementTo(id,FormatDate(date));
+const SetElementToDate = (id,date)=>SetElementTo(id,`(${FormatDate(date)})`);
 const SetElementToTimeSpan = (id,timeSpan)=>SetElementTo(id,`${timeSpan.Sleeping?"-":""}${FormatTime(timeSpan.Hour,timeSpan.Min)}`);
-const SetElementToHourMin = (id,time)=>SetElementTo(id,`${FormatTime(time.getHours(),time.getMinutes())} ${GetTimezoneOffsetone(time)}`);
+const SetElementToHourMin = (id,time)=>SetElementTo(id,FormatTimeAndZone(time));
 
 const FormatTime=(hour,min) =>`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`
-const FormatDate=(date) =>`(${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")})`;
+const FormatTimeAndZone=(time) =>`${FormatTime(time.getHours(),time.getMinutes())} ${GetTimezoneOffsetone(time)}`
+const FormatDate=(date) =>`${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")}`;
 
 const addHours = (date, hours) => new Date(date.getTime() + hours*60*60*1000);
 
@@ -112,4 +131,39 @@ function GetTimezoneOffsetone(date)
     }
 
   return abbr;
+}
+
+function GenerateFutureBox(date)
+{
+    var times = GetWakeUpAndBedTime(date);
+
+    return `<div class="home-container23">
+              <span id="futureDate0" class="home-text33">${FormatDate(date)}</span>
+              <div class="home-container24">
+                <div class="home-container25">
+                  <div class="home-container26">
+                    <span class="home-text34">
+                      <span>Wake up time</span>
+                      <br />
+                    </span>
+                  </div>
+                  <div class="home-container27">
+                    <span id="futureWake0" class="home-text37">${FormatTimeAndZone(times.WakeUpTime)}</span>
+                    <span id="futureWakeDate0" class="home-text38">${FormatDate(times.WakeUpTime)}</span>
+                  </div>
+                </div>
+                <div class="home-container28">
+                  <div class="home-container29">
+                    <span class="home-text39">
+                      <span>Bed time</span>
+                      <br />
+                    </span>
+                  </div>
+                  <div class="home-container30">
+                    <span id="futureBedTime0" class="home-text42">${FormatTimeAndZone(times.Bedtime)}</span>
+                    <span id="futureBedTimeDate0" class="home-text43">${FormatDate(times.Bedtime)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>`;
 }
