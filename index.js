@@ -1,13 +1,31 @@
-const referenceBedTime = DateInTimeZone(2025, 11, 1, 4, 0, 0, "Europe/Budapest");
+//sorry for the shitty js I don't care
 
-const sleepLengthInHours = 8;
+const binUrl ="https://api.jsonbin.io/v3/b/69066dc843b1c97be991b015";
+
+var referenceBedTime;
+
+const sleepLengthHours = 8;
+const dayLengthHours = 25;
+const awakeLength = dayLengthHours-sleepLengthHours;
 
 window.onerror = function (msg, url, line, col, error) {
   alert("JS Error:\n" + msg + "\n" + url + ":" + line);
 };
 
-window.onload = function() 
+window.onload = async function() 
 { 
+  await fetch(binUrl)
+    .then(res => res.json())
+    .then(json => 
+      {
+        referenceBedTime = new DateInTimeZone(
+          json.record.year, 
+          json.record.month, 
+          json.record.day, 
+          json.record.hour, 0, 0, "Europe/Budapest");
+    })
+    .catch(err => alert(err));
+
     const now = new Date();
 
     SetDatePicker(now);
@@ -19,7 +37,10 @@ function SetDatePicker(now)
 {
     const input = document.getElementById("datePicker");
 
-    input.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    var today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    input.min = today
+    input.value = today
 
     input.addEventListener("change", () => RefreshFutureDates(new Date(input.value)));
 }
@@ -29,27 +50,30 @@ function RefreshFutureDates(date)
     const element = document.getElementById('future');
     element.innerHTML = '';
 
-    var futureDate = DateInTimeZone(date.getFullYear(),date.getMonth()+1,date.getDate(),0,0,0,"Europe/Budapest");
+    var futureDate = DateInTimeZone(date.getFullYear(),date.getMonth()+1,date.getDate(),23,59,59,"Europe/Budapest");
 
-    element.innerHTML+= GenerateFutureBox(addHours(futureDate,-24));
-    element.innerHTML+= GenerateFutureBox(futureDate);
-    element.innerHTML+= GenerateFutureBox(addHours(futureDate,24));
+    var previousDayWakeUp = GetWakeUp(addHours(futureDate,-24))
+    var previousDayBedTime = addHours(previousDayWakeUp,awakeLength);
+
+    element.innerHTML+= GenerateFutureBox(previousDayWakeUp,previousDayBedTime);
+    element.innerHTML+= GenerateFutureBox(addHours(previousDayWakeUp,dayLengthHours),addHours(previousDayBedTime,dayLengthHours));
+    element.innerHTML+= GenerateFutureBox(addHours(previousDayWakeUp,dayLengthHours*2),addHours(previousDayBedTime,dayLengthHours*2));
 }
 
 function RefreshToday(now)
 {
-    var times = GetWakeUpAndBedTime(now);
+    bedtime =GetTodayBedTime(now)
+    wakeUp = addHours(bedtime,-(dayLengthHours-sleepLengthHours))
+    SetAwake(wakeUp);
+    SetAwakeDate(wakeUp);
 
-    SetAwake(times.WakeUpTime);
-    SetAwakeDate(times.WakeUpTime);
+    SetBedTime(bedtime);
+    SetBedTimeDate(bedtime);
 
-    SetBedTime(times.Bedtime);
-    SetBedTimeDate(times.Bedtime);
-
-    var awakeTime = DiffToHourMin(now - times.WakeUpTime);
+    var awakeTime = DiffToHourMin(now - wakeUp);
 
     SetAwakeTime(awakeTime);
-    SetTimeToBed(DiffToHourMin(times.Bedtime-now));
+    SetTimeToBed(DiffToHourMin(bedtime-now));
 
     if(awakeTime.Sleeping)
     {
@@ -61,12 +85,42 @@ function RefreshToday(now)
     }
 }
 
+function GetTodayBedTime(date)
+{
+  var bedtime = referenceBedTime;
+
+  while(bedtime<date)
+  {
+    bedtime = addHours(bedtime,dayLengthHours)
+  }
+  
+  return bedtime;
+}
+
+function GetWakeUp(date)
+{
+  var wakeUp = addHours(referenceBedTime,-awakeLength)
+
+  while(wakeUp<date)
+  {
+    if(wakeUp.getFullYear() == date.getFullYear()
+    && wakeUp.getMonth() == date.getMonth()
+    && wakeUp.getDate() == date.getDate())
+    {
+      return wakeUp;
+    }
+
+    wakeUp = addHours(wakeUp,dayLengthHours);
+  }
+
+}
+
 function GetWakeUpAndBedTime(date)
 {
     const dayDiff = Math.floor((date - referenceBedTime) / (1000 * 60 * 60 * 24));
 
-    var bedTime = addHours(referenceBedTime,(dayDiff+1)*25);
-    var wakeUpTime = addHours(bedTime,-(25-sleepLengthInHours));
+    var bedTime = addHours(referenceBedTime,(dayDiff+1)*dayLengthHours);
+    var wakeUpTime = addHours(bedTime,-awakeLength);
 
     return { Bedtime: bedTime, WakeUpTime:wakeUpTime};
 }
@@ -105,7 +159,7 @@ const SetElementToHourMin = (id,time)=>SetElementTo(id,FormatTimeAndZone(time));
 
 const FormatTime=(hour,min) =>`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`
 const FormatTimeAndZone=(time) =>`${FormatTime(time.getHours(),time.getMinutes())} ${GetTimezone(time)}`
-const FormatDate=(date) =>`${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")}`;
+const FormatDate=(date) =>`${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")} ${GetDayShort(date)}`;
 
 const addHours = (date, hours) => new Date(date.getTime() + hours*60*60*1000);
 
@@ -125,12 +179,13 @@ function GetTimezone(date) {
   return "UTC";
 }
 
-function GenerateFutureBox(date)
-{
-    var times = GetWakeUpAndBedTime(date);
+const GetDayShort=(date) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
 
+
+function GenerateFutureBox(wakeUp,bedtime)
+{
     return `<div class="home-container23">
-              <span id="futureDate0" class="home-text33">${FormatDate(date)}</span>
+              <span id="futureDate0" class="home-text33">${FormatDate(wakeUp)}</span>
               <div class="home-container24">
                 <div class="home-container25">
                   <div class="home-container26">
@@ -140,8 +195,8 @@ function GenerateFutureBox(date)
                     </span>
                   </div>
                   <div class="home-container27">
-                    <span id="futureWake0" class="home-text37">${FormatTimeAndZone(times.WakeUpTime)}</span>
-                    <span id="futureWakeDate0" class="home-text38">(${FormatDate(times.WakeUpTime)})</span>
+                    <span id="futureWake0" class="home-text37">${FormatTimeAndZone(wakeUp)}</span>
+                    <span id="futureWakeDate0" class="home-text38">(${FormatDate(wakeUp)})</span>
                   </div>
                 </div>
                 <div class="home-container28">
@@ -152,8 +207,8 @@ function GenerateFutureBox(date)
                     </span>
                   </div>
                   <div class="home-container30">
-                    <span id="futureBedTime0" class="home-text42">${FormatTimeAndZone(times.Bedtime)}</span>
-                    <span id="futureBedTimeDate0" class="home-text43">(${FormatDate(times.Bedtime)})</span>
+                    <span id="futureBedTime0" class="home-text42">${FormatTimeAndZone(bedtime)}</span>
+                    <span id="futureBedTimeDate0" class="home-text43">(${FormatDate(bedtime)})</span>
                   </div>
                 </div>
               </div>
