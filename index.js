@@ -159,7 +159,7 @@ const SetElementToHourMin = (id,time)=>SetElementTo(id,FormatTimeAndZone(time));
 
 const FormatTime=(hour,min) =>`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`
 const FormatTimeAndZone=(time) =>`${FormatTime(time.getHours(),time.getMinutes())} ${GetTimezone(time)}`
-const FormatDate=(date) =>`${GetDayShort(date)} ${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")}}`;
+const FormatDate=(date) =>`${GetDayShort(date)} ${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,"0")}.${String(date.getDate()).padStart(2,"0")}`;
 
 const addHours = (date, hours) => new Date(date.getTime() + hours*60*60*1000);
 
