@@ -12,6 +12,8 @@ window.onerror = function (msg, url, line, col, error) {
   alert("JS Error:\n" + msg + "\n" + url + ":" + line);
 };
 
+const now = new Date();
+
 window.onload = async function() 
 { 
   await fetch(binUrl)
@@ -26,14 +28,12 @@ window.onload = async function()
     })
     .catch(err => alert(err));
 
-    const now = new Date();
-
-    SetDatePicker(now);
-    RefreshToday(now);
+    SetDatePicker();
+    RefreshToday();
     RefreshFutureDates(now)
 };
 
-function SetDatePicker(now)
+function SetDatePicker()
 {
     const input = document.getElementById("datePicker");
 
@@ -50,6 +50,17 @@ function RefreshFutureDates(date)
     const element = document.getElementById('future');
     element.innerHTML = '';
 
+    var nowDay = new Date(now);
+    nowDay.setHours(0,0,0,0);
+    var dayeDay= new Date(date);
+    dayeDay.setHours(0,0,0,0);
+
+    if(dayeDay < nowDay)
+    {
+        alert(`${FormatDate(date)} is not valid. Please select today’s date or a later one.`)
+        return;     
+    }
+
     var futureDate = DateInTimeZone(date.getFullYear(),date.getMonth()+1,date.getDate(),23,59,59,"Europe/Budapest");
 
     var previousDayWakeUp = GetWakeUp(addHours(futureDate,-24))
@@ -60,7 +71,7 @@ function RefreshFutureDates(date)
     element.innerHTML+= GenerateFutureBox(addHours(previousDayWakeUp,dayLengthHours*2),addHours(previousDayBedTime,dayLengthHours*2));
 }
 
-function RefreshToday(now)
+function RefreshToday()
 {
     bedtime =GetTodayBedTime(now)
     wakeUp = addHours(bedtime,-(dayLengthHours-sleepLengthHours))
@@ -111,6 +122,11 @@ function GetWakeUp(date)
     }
 
     wakeUp = addHours(wakeUp,dayLengthHours);
+  }
+
+  if(wakeUp.getHours()==0)
+  {
+    return wakeUp;
   }
 
 }
